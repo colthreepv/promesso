@@ -1,7 +1,7 @@
 {
   "name": "promesso",
   "version": "1.0.0",
-  "description": "Promise handler for express.js 4.x",
+  "description": "Opinionated Promise handler for express.js 4.x",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
