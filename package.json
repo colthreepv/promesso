@@ -1,0 +1,30 @@
+{
+  "name": "promesso",
+  "version": "1.0.0",
+  "description": "Promise handler for express.js 4.x",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colthreepv/promesso.git"
+  },
+  "keywords": [
+    "promise",
+    "express",
+    "node",
+    "callback"
+  ],
+  "author": "colthreepv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/colthreepv/promesso/issues"
+  },
+  "homepage": "https://github.com/colthreepv/promesso#readme",
+  "dependencies": {
+    "bluebird": "^3.3.4",
+    "express-validation": "^0.5.0",
+    "x-error": "0.0.10"
+  }
+}
