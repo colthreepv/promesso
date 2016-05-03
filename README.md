@@ -47,3 +47,14 @@ module.exports = [myValidator, exmplMiddleware];
 ```
 
 Here there are tricky `next()` calls to remember and Error(s) are not class-based.
+
+
+## API
+
+### promesso.logger(loggingFn, errorFn)
+Changes standard `console.log` and `console.error` functions to output informations;
+
+
+## Changelog
+
+1.1.0: Added `promesso.logger`

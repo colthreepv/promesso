@@ -4,6 +4,16 @@ const validation = require('express-validation');
 const XError = require('x-error');
 const Promise = require('bluebird');
 
+const logger = {
+  log: console.log,
+  error: console.error
+};
+
+function changeLogger (loggerFn, errorFn) {
+  logger.log = loggerFn;
+  logger.error = errorFn;
+}
+
 function promesso (handler) {
   const middlewares = [];
   const befores = handler['@before'];
@@ -15,6 +25,7 @@ function promesso (handler) {
 
   return middlewares;
 }
+promesso.logger = changeLogger;
 
 function handleFactory (handler) {
 
@@ -56,8 +67,8 @@ function isObject (obj) {
  * Error Handlers
  */
 function xerrorHandler (res, err) {
-  console.log(`Error: ${err.code} - ${err.message}`);
-  console.dir(err);
+  logger.log(`Error: ${err.code} - ${err.message}`);
+  logger.dir(err);
 
   const httpCode = err.httpCode || 500;
   const httpResponse = err.httpResponse;
@@ -65,13 +76,13 @@ function xerrorHandler (res, err) {
   else res.sendStatus(httpCode);
 }
 function errorHandler (req, res, err) {
-  console.dir(err, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
+  logger.dir(err, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
   // if (page) return res.status(500).render('error');
   return res.sendStatus(500);
 }
 function genericHandler (res, err) {
-  console.error('Non-Error Error, probably string:');
-  console.error(err);
+  logger.error('Non-Error Error, probably string:');
+  logger.error(err);
   return res.sendStatus(500);
 }
 
