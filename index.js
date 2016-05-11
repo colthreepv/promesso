@@ -10,10 +10,11 @@ const logger = {
 };
 
 function changeLogger (loggerFn, errorFn) {
-  logger.log = loggerFn;
-  logger.error = errorFn;
+  if (typeof loggerFn === 'function') logger.log = loggerFn;
+  if (typeof errorFn === 'function') logger.error = errorFn;
 }
 
+// TODO: handle Array middlewares
 function promesso (handler) {
   const middlewares = [];
   const befores = handler['@before'];
@@ -32,7 +33,7 @@ function handleFactory (handler) {
   // handle more cases
   return function (req, res) {
     const promisified = Promise.method(handler);
-    promisified(req)
+    return promisified(req) // express ignores return value, but useful for testing
     .then(response => {
       if (Array.isArray(response)) { // array structure
         response.forEach(r => res[r.method].apply(res, r.args));
@@ -68,7 +69,7 @@ function isObject (obj) {
  */
 function xerrorHandler (res, err) {
   logger.log(`Error: ${err.code} - ${err.message}`);
-  logger.dir(err);
+  logger.log(err);
 
   const httpCode = err.httpCode || 500;
   const httpResponse = err.httpResponse;
@@ -76,7 +77,7 @@ function xerrorHandler (res, err) {
   else res.sendStatus(httpCode);
 }
 function errorHandler (req, res, err) {
-  logger.dir(err, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
+  logger.log(err, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
   // if (page) return res.status(500).render('error');
   return res.sendStatus(500);
 }

@@ -51,10 +51,19 @@ Here there are tricky `next()` calls to remember and Error(s) are not class-base
 
 ## API
 
-### promesso.logger(loggingFn, errorFn)
+### `promesso.logger([loggingFn], [errorFn])`
 Changes standard `console.log` and `console.error` functions to output informations;
 
 
 ## Changelog
 
-1.1.0: Added `promesso.logger`
+## [2.0.0] - 2016-05-11
+### Added
+- Tests!
+
+### Changed
+- Some erroneous calls in the code
+
+## [1.1.0] - 2016-05-03
+## Added
+- `promesso.logger` to customize the logging/error functions
