@@ -1,7 +1,11 @@
-# promesso
+promesso
+========
+[![NPM](https://nodei.co/npm/promesso.png)](https://nodei.co/npm/promesso/)
+[![Build Status](https://travis-ci.org/colthreepv/promesso.svg?branch=master)](https://travis-ci.org/colthreepv/promesso)
+
 Opinionated Promise handler for express.js 4.x
 
-Still Work in Progress
+**Status:** Tested, production uptime short.
 
 # Example
 
