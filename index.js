@@ -68,8 +68,7 @@ function isObject (obj) {
  * Error Handlers
  */
 function xerrorHandler (res, err) {
-  logger.log(`Error: ${err.code} - ${err.message}`);
-  logger.log(err);
+  logger.log(err, `Error: ${err.code} - ${err.message}`);
 
   const httpCode = err.httpCode || 500;
   const httpResponse = err.httpResponse;
@@ -77,7 +76,7 @@ function xerrorHandler (res, err) {
   else res.sendStatus(httpCode);
 }
 function errorHandler (req, res, err) {
-  logger.log(err, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
+  logger.log(err.stack, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
   // if (page) return res.status(500).render('error');
   return res.sendStatus(500);
 }

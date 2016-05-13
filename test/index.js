@@ -139,6 +139,12 @@ describe('Error handling during middleware execution', () => {
       assert.include(loggerData, 'coding');
       assert.include(loggerData, 'Reference');
     });
+
+    it('stack trace is present in the logs', () => {
+      assert.isTrue(loggerSpy.called);
+      assert.include(loggerData, 'throwCodingErr');
+      assert.include(loggerData, 'at eval');
+    });
   });
 
   describe('should handle generic errors', () => {

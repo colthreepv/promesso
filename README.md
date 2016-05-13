@@ -5,6 +5,8 @@ promesso
 
 Opinionated Promise handler for express.js 4.x
 
+__Promess-o__ wraps a Promise-based middleware with different error handlers and converts it to a simple function (actually an array of functions) to be used by [express](http://expressjs.com/)
+
 **Status:** Tested, production uptime short.
 
 # Example
@@ -58,8 +60,17 @@ Here there are tricky `next()` calls to remember and Error(s) are not class-base
 ### `promesso.logger([loggingFn], [errorFn])`
 Changes standard `console.log` and `console.error` functions to output informations;
 
+## Roadmap
+
+- Possibility to extend with another type of errors *(?)*
+
 
 ## Changelog
+
+## [2.0.1] - 2016-05-13
+### Changed
+- Uniformed `loggingFn` calls to ([obj], message) to support [pino](https://github.com/mcollina/pino) / [bunyan](https://github.com/trentm/node-bunyan)
+- `errorFn` calls are still all string-based, it's used for unknown-type of errors
 
 ## [2.0.0] - 2016-05-11
 ### Added
