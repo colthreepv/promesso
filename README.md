@@ -63,7 +63,7 @@ Changes standard `console.log` and `console.error` functions to output informati
 ## Roadmap
 
 - Possibility to extend with another type of errors *(?)*
-
+- Remove `express-validation` from dependencies - [#1](//github.com/colthreepv/promesso/issues/1)
 
 ## Changelog
 
