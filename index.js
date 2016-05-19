@@ -71,7 +71,7 @@ function xerrorHandler (res, err) {
   logger.log(err, `Error: ${err.code} - ${err.message}`);
 
   const httpCode = err.httpCode || 500;
-  const httpResponse = err.httpResponse;
+  const httpResponse = typeof err.httpResponse === 'string' ? { code: err.code, message: err.httpResponse } : err.httpResponse;
   if (httpResponse) res.status(httpCode).send(httpResponse);
   else res.sendStatus(httpCode);
 }

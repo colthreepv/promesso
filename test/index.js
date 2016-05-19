@@ -2,6 +2,7 @@
 const util = require('util');
 const assert = require('chai').assert;
 const sinon = require('sinon');
+const sAssert = sinon.assert;
 const Promise = require('bluebird');
 const XError = require('x-error');
 
@@ -38,8 +39,8 @@ describe('Starting from a Promise middleware', () => {
     const promisedMiddleware = promised[0];
 
     return promisedMiddleware(req, res).then(() => {
-      assert.isTrue(res.status.called);
-      assert.isTrue(res.send.called);
+      sAssert.called(res.status);
+      sAssert.called(res.send);
     });
   });
 
@@ -80,15 +81,20 @@ describe('Error handling during middleware execution', () => {
 
 
       return promisedMiddleware(req, res).then(() => {
-        assert.isTrue(res.status.called);
-        assert.isTrue(res.send.called);
-        assert.isTrue(res.status.calledWith(404));
-        assert.isTrue(res.send.calledWith('file not found'));
+        const responseMatch = sinon.match({ code: 9999, message: 'file not found' });
+        const stringMatch = sinon.match('file not found');
+
+        sAssert.called(res.status);
+        sAssert.called(res.send);
+        sAssert.calledWith(res.status, 404);
+
+        sAssert.calledWith(res.send, responseMatch);
+        sAssert.neverCalledWith(res.send, stringMatch);
       });
     });
 
     it('correctly call the logger function', () => {
-      assert.isTrue(loggerSpy.called);
+      sAssert.called(loggerSpy);
       assert.include(loggerData, '9999');
       assert.include(loggerData, '404');
       assert.include(loggerData, 'file not found');
@@ -129,19 +135,19 @@ describe('Error handling during middleware execution', () => {
 
 
       return promisedMiddleware(req, res).then(() => {
-        assert.isTrue(res.sendStatus.called);
-        assert.isTrue(res.sendStatus.calledWith(500));
+        sAssert.called(res.sendStatus);
+        sAssert.calledWith(res.sendStatus, 500);
       });
     });
 
     it('correctly call the logger function', () => {
-      assert.isTrue(loggerSpy.called);
+      sAssert.called(loggerSpy);
       assert.include(loggerData, 'coding');
       assert.include(loggerData, 'Reference');
     });
 
     it('stack trace is present in the logs', () => {
-      assert.isTrue(loggerSpy.called);
+      sAssert.called(loggerSpy);
       assert.include(loggerData, 'throwCodingErr');
       assert.include(loggerData, 'at eval');
     });
@@ -180,13 +186,13 @@ describe('Error handling during middleware execution', () => {
 
 
       return promisedMiddleware(req, res).then(() => {
-        assert.isTrue(res.sendStatus.called);
-        assert.isTrue(res.sendStatus.calledWith(500));
+        sAssert.called(res.sendStatus);
+        sAssert.calledWith(res.sendStatus, 500);
       });
     });
 
     it('correctly call the logger function', () => {
-      assert.isTrue(errorSpy.called);
+      sAssert.called(errorSpy);
       assert.include(loggerData, 'string');
       assert.include(loggerData, 'This is not an error');
     });
