@@ -67,6 +67,10 @@ Changes standard `console.log` and `console.error` functions to output informati
 
 ## Changelog
 
+## [3.0.0] - 2016-05-19
+### Changed
+- `XError`s httpResponse gets converted to a JSON response `{ code: 1xx, message: 'error message' }` in case is a plain `string`
+
 ## [2.0.1] - 2016-05-13
 ### Changed
 - Uniformed `loggingFn` calls to ([obj], message) to support [pino](https://github.com/mcollina/pino) / [bunyan](https://github.com/trentm/node-bunyan)

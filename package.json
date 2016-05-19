@@ -1,6 +1,6 @@
 {
   "name": "promesso",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Opinionated Promise handler for express.js 4.x",
   "main": "index.js",
   "scripts": {
