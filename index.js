@@ -71,9 +71,9 @@ function xerrorHandler (res, err) {
   logger.log(err, `Error: ${err.code} - ${err.message}`);
 
   const httpCode = err.httpCode || 500;
-  const httpResponse = typeof err.httpResponse === 'string' ? { code: err.code, message: err.httpResponse } : err.httpResponse;
-  if (httpResponse) res.status(httpCode).send(httpResponse);
-  else res.sendStatus(httpCode);
+  const httpResponse = { code: err.code };
+  if (typeof err.httpResponse === 'string') httpResponse.message = err.httpResponse;
+  return res.status(httpCode).send(httpResponse);
 }
 function errorHandler (req, res, err) {
   logger.log(err.stack, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
