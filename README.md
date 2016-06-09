@@ -23,8 +23,7 @@ function myValidator (req) {
 function exmplMiddleware (req) {
   return Promise.resolve({ status: 'ok', data: req.body.creditcard });
 }
-exmplMiddleware['@before'] = myValidator;
-module.exports = exmplMiddleware;
+module.exports = [myValidator, exmplMiddleware];
 ```
 
 In this sample middleware the main functions is asynchronous and requires a specific `req.body.creditcard` otherwise it cannot function properly.
@@ -59,6 +58,66 @@ Here there are tricky `next()` calls to remember and Error(s) are not class-base
 
 ### `promesso.logger([loggingFn], [errorFn])`
 Changes standard `console.log` and `console.error` functions to output informations;
+
+### `promesso(Function|Function[])`
+Promesso can receive a single function or an array of ordered functions.
+All the functions will be promisified unless they have a `@raw = true` annotation.
+The functions will call `next()` when the promise is completed, the last one calls `res.send()` appropriately.
+
+## Synchronous returns
+If you need to return a static template of some kind you can just return it, **promesso** will handle it gracefully.
+
+```javascript
+function webpage (req) {
+  return `
+    <html>
+      <head></head>
+      <body><h1>Hello World</h1></body>
+    </html>
+  `;
+}
+```
+
+
+## Raw Functions
+Sometime you might need a **raw** express function, in this case you can use the `handler['@raw'] = true` annotation.
+
+```javascript
+function rawHandler (req, res, next) {
+  if (req.accepts('html')) return next();
+  res.sendFile('welcome-logo.png');
+}
+rawHandler['@raw'] = true;
+
+function webpage (req) {
+  return Promise.resolve(`<html><body><h1>Hello World</h1></body></html>`)
+}
+
+module.exports = [rawHandler, webpage];
+```
+
+
+## Custom `res` methods using Promises
+It can happen that is required to give a response with a webpage `res.render(...)` or give multiple commands, like `res.set(...)`.
+
+In that case the Promise should be resolved in an Array of `res` commands as follows:
+
+```javascript
+function customHeaders (req) {
+  return Promise.resolve([
+    { method: 'set', args: ['Content-Type', 'text/plain'] },
+    { method: 'send',
+      args: [{ message: 'everything ok' }]
+    }
+  ]);
+}
+```
+
+Altough a bit verbose, the implementation is very simple, it's just a sequence of `res[method].apply(res, r.args)` calls, it's not tought to be used often.
+
+## TODO
+
+- `example` directory, with full Express 4.x example
 
 ## Roadmap
 

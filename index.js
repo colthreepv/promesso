@@ -11,8 +11,8 @@ const logger = {
 };
 
 function changeLogger (loggerFn, errorFn) {
-  if (typeof loggerFn === 'function') logger.log = loggerFn;
-  if (typeof errorFn === 'function') logger.error = errorFn;
+  if (isFunction(loggerFn)) logger.log = loggerFn;
+  if (isFunction(errorFn)) logger.error = errorFn;
 }
 
 /**
@@ -69,6 +69,7 @@ function handleFactory (handler, usesNext) {
 
 function isObject (obj) { return (obj !== null && typeof obj === 'object'); }
 function isFunction (fn) { return typeof fn === 'function'; }
+function isString (fn) { return typeof fn === 'string'; }
 
 /**
  * Error Handlers
@@ -78,8 +79,9 @@ function xerrorHandler (res, err) {
 
   const httpCode = err.httpCode || 500;
   const httpResponse = { code: err.code };
-  if (typeof err.httpResponse === 'object') return res.status(httpCode).send(err.httpResponse);
-  if (typeof err.httpResponse === 'string') httpResponse.message = err.httpResponse;
+  if (isObject(err.httpResponse)) return res.status(httpCode).send(err.httpResponse);
+
+  if (isString(err.httpResponse)) httpResponse.message = err.httpResponse;
   return res.status(httpCode).send(httpResponse);
 }
 function errorHandler (req, res, err) {
