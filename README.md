@@ -9,6 +9,15 @@ __Promess-o__ wraps a Promise-based middleware with different error handlers and
 
 **Status:** Tested, production uptime short.
 
+# Install
+Install legacy version (3.x):  
+`npm i --save promesso`
+
+Install current version (4.x):  
+`npm i --save promesso@next`
+
+At the moment the 4.x branch is behind a npm `dist-tag`, as the uptime in my projects arise I will move it towards the stable tag.
+
 # Example
 
 An Express middleware can be declared like this:
