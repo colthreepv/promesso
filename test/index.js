@@ -15,6 +15,15 @@ function DummyResponse () {
   });
 }
 
+function newRequest (options) {
+  return Object.assign({}, {
+    body: {},
+    params: {},
+    query: {},
+    ip: '127.0.0.1'
+  }, options);
+}
+
 describe('Starting from a Promise middleware', () => {
   function middleware (req) {
     return Promise.resolve('Hello world');
@@ -28,12 +37,7 @@ describe('Starting from a Promise middleware', () => {
   });
 
   it('should call res methods when the Promise completed', () => {
-    const req = {
-      body: {},
-      params: {},
-      query: {},
-      ip: '127.0.0.1'
-    };
+    const req = newRequest();
 
     const res = new DummyResponse();
     const promisedMiddleware = promised[0];
@@ -45,6 +49,31 @@ describe('Starting from a Promise middleware', () => {
   });
 
 });
+
+describe('Has basic functionality of', () => {
+  function middleware (req) {
+    return [
+      Promise.resolve('hello'),
+      Promise.resolve('world!')
+    ];
+  }
+
+  const promised = promesso(middleware);
+
+  it('middleware can return a Promise resolving in an Array', () => {
+    const req = newRequest();
+
+    const res = new DummyResponse();
+    const promisedMiddleware = promised[0];
+
+    return promisedMiddleware(req, res).then((response) => {
+      assert.isArray(response);
+      assert.include(response, 'hello');
+      assert.include(response, 'world!');
+    });
+  });
+});
+
 
 describe('Error handling during middleware execution', () => {
 
@@ -71,12 +100,7 @@ describe('Error handling during middleware execution', () => {
     it('giving an HTTP response', () => {
       const promisedMiddleware = promised[0];
 
-      const req = {
-        body: {},
-        params: {},
-        query: {},
-        ip: '127.0.0.1'
-      };
+      const req = newRequest();
       const res = new DummyResponse();
 
 
@@ -125,12 +149,7 @@ describe('Error handling during middleware execution', () => {
     it('giving an HTTP response', () => {
       const promisedMiddleware = promised[0];
 
-      const req = {
-        body: {},
-        params: {},
-        query: {},
-        ip: '127.0.0.1'
-      };
+      const req = newRequest();
       const res = new DummyResponse();
 
 
@@ -176,12 +195,7 @@ describe('Error handling during middleware execution', () => {
     it('giving an HTTP response', () => {
       const promisedMiddleware = promised[0];
 
-      const req = {
-        body: {},
-        params: {},
-        query: {},
-        ip: '127.0.0.1'
-      };
+      const req = newRequest();
       const res = new DummyResponse();
 
 

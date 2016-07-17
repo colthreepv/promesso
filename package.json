@@ -25,12 +25,12 @@
   "homepage": "https://github.com/colthreepv/promesso#readme",
   "dependencies": {
     "bluebird": "^3.3.5",
-    "express-validation": "^0.6.0",
+    "express-validation": "^1.0.0",
     "x-error": "0.0.10"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "joi": "^8.1.0",
+    "joi": "^9.0.1",
     "mocha": "^2.4.5",
     "sinon": "^1.17.4"
   }
