@@ -13,10 +13,10 @@ __Promess-o__ wraps a Promise-based middleware with different error handlers and
 Install legacy version (3.x):  
 `npm i --save promesso`
 
-Install current version (4.x):  
+Install current version (5.x):  
 `npm i --save promesso@next`
 
-At the moment the 4.x branch is behind a npm `dist-tag`, as the uptime in my projects arise I will move it towards the stable tag.
+At the moment the 5.x branch is behind a npm `dist-tag`, as the uptime in my projects arise I will move it towards the stable tag.
 
 # Example
 
@@ -109,16 +109,19 @@ module.exports = [rawHandler, webpage];
 ## Custom `res` methods using Promises
 It can happen that is required to give a response with a webpage `res.render(...)` or give multiple commands, like `res.set(...)`.
 
-In that case the Promise should be resolved in an Array of `res` commands as follows:
+In that case the Promise should be resolved with a Function having as first parameter the `req` node/express object
+
+Example:
 
 ```javascript
-function customHeaders (req) {
-  return Promise.resolve([
-    { method: 'set', args: ['Content-Type', 'text/plain'] },
-    { method: 'send',
-      args: [{ message: 'everything ok' }]
-    }
-  ]);
+function customResponseMiddleware (req) {
+  var variableInClosure = 55;
+  return Promise.resolve(customFn);
+
+  function customFn (res) {
+    res.set('Content-Type', 'text/plain');
+    res.send({ message: 'everything ok', variable: variableInClosure });
+  }
 }
 ```
 
@@ -126,7 +129,7 @@ Altough a bit verbose, the implementation is very simple, it's just a sequence o
 
 ## TODO
 
-- `example` directory, with full Express 4.x example
+- `example` directory, with full Express 5.x example
 
 ## Roadmap
 
@@ -135,12 +138,21 @@ Altough a bit verbose, the implementation is very simple, it's just a sequence o
 
 ## Changelog
 
+## [5.0.0] - 2016-07-19
+### Changes
+- Response handled by promess-o middlewares are now any type, except functions.
+If returned a function, it would be a custom response handler. More flexible and concise.
+
+## [4.0.0] - 2016-06-09
+### Changes
+- Changed the way the library works, handles Array of middlewares, automatically handles `next()` calls
+
 ## [3.0.0] - 2016-05-19
-### Changed
+### Changes
 - `XError`s httpResponse gets converted to a JSON response `{ code: 1xx, message: 'error message' }` in case is a plain `string`
 
 ## [2.0.1] - 2016-05-13
-### Changed
+### Changes
 - Uniformed `loggingFn` calls to ([obj], message) to support [pino](https://github.com/mcollina/pino) / [bunyan](https://github.com/trentm/node-bunyan)
 - `errorFn` calls are still all string-based, it's used for unknown-type of errors
 
@@ -148,7 +160,7 @@ Altough a bit verbose, the implementation is very simple, it's just a sequence o
 ### Added
 - Tests!
 
-### Changed
+### Changes
 - Some erroneous calls in the code
 
 ## [1.1.0] - 2016-05-03

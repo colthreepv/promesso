@@ -51,29 +51,58 @@ describe('Starting from a Promise middleware', () => {
 });
 
 describe('Has basic functionality of', () => {
-  function middleware (req) {
-    return [
-      Promise.resolve('hello'),
-      Promise.resolve('world!')
-    ];
-  }
 
-  const promised = promesso(middleware);
+  describe('middleware can return a Promise', () => {
+    function middleware (req) {
+      return Promise.all([
+        Promise.resolve('hello'),
+        Promise.resolve('world!')
+      ]);
+    }
 
-  it('middleware can return a Promise resolving in an Array', () => {
-    const req = newRequest();
+    const promised = promesso(middleware);
 
-    const res = new DummyResponse();
-    const promisedMiddleware = promised[0];
+    it('will be resolved if it\'s not a function', () => {
+      const req = newRequest();
 
-    return promisedMiddleware(req, res).then((response) => {
-      assert.isArray(response);
-      assert.include(response, 'hello');
-      assert.include(response, 'world!');
+      const res = new DummyResponse();
+      const promisedMiddleware = promised[0];
+
+      return promisedMiddleware(req, res).then(() => {
+        const responseMatch = sinon.match(['hello', 'world!']);
+        sAssert.called(res.status);
+        sAssert.called(res.send);
+        sAssert.calledWith(res.send, responseMatch);
+      });
+    });
+  });
+
+  describe('middleware can return a function', () => {
+    function middleware (req) {
+      return resFn;
+      function resFn (res) {
+        res.status(200);
+        res.send({ message: 'ok' });
+      }
+    }
+
+    const promised = promesso(middleware);
+
+    it('will be used as a custom \'res\' responder', () => {
+      const req = newRequest();
+
+      const res = new DummyResponse();
+      const promisedMiddleware = promised[0];
+
+      return promisedMiddleware(req, res).then(() => {
+        const responseMatch = sinon.match({ message: 'ok' });
+        sAssert.called(res.status);
+        sAssert.called(res.send);
+        sAssert.calledWith(res.send, responseMatch);
+      });
     });
   });
 });
-
 
 describe('Error handling during middleware execution', () => {
 

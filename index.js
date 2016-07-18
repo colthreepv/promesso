@@ -43,7 +43,7 @@ promesso.logger = changeLogger;
 
 function rawOrPromise (handler, index, array) {
   if (handler['@raw']) return handler;
-  else return handleFactory(handler, (index !== array.length - 1));
+  return handleFactory(handler, (index !== array.length - 1));
 }
 
 function handleFactory (handler, usesNext) {
@@ -54,12 +54,8 @@ function handleFactory (handler, usesNext) {
     return promisified(req) // express ignores return value, but useful for testing
     .then(response => {
       if (usesNext) return next();
-      // array structure
-      if (Array.isArray(response)) {
-        response.forEach(r => res[r.method].apply(res, r.args));
-      } else {
-        res.status(200).send(response);
-      }
+      if (isFunction(response)) response(res);
+      else res.status(200).send(response);
     })
     .catch(XError, xerrorHandler.bind(null, res))
     .catch(Error, errorHandler.bind(null, req, res))
