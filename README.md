@@ -7,16 +7,11 @@ Opinionated Promise handler for express.js 4.x
 
 __Promess-o__ wraps a Promise-based middleware with different error handlers and converts it to a simple function (actually an array of functions) to be used by [express](http://expressjs.com/)
 
-**Status:** Tested, production uptime short.
+**Status:** Tested, production uptime medium.
 
 # Install
-Install legacy version (3.x):  
+Install in your project using:
 `npm i --save promesso`
-
-Install current version (5.x):  
-`npm i --save promesso@next`
-
-At the moment the 5.x branch is behind a npm `dist-tag`, as the uptime in my projects arise I will move it towards the stable tag.
 
 # Example
 
