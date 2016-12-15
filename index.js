@@ -5,6 +5,11 @@ const XError = require('x-error');
 const ValidationError = validation.ValidationError;
 const Promise = require('bluebird');
 
+const errorHandling = [
+  { type: XError, xerrorHandler },
+  { type: Error, errorHandler },
+];
+
 const logger = {
   log: console.log,
   error: console.error
@@ -14,6 +19,10 @@ function changeLogger (loggerFn, errorFn) {
   if (isFunction(loggerFn)) logger.log = loggerFn;
   if (isFunction(errorFn)) logger.error = errorFn;
 }
+
+// adds handlers to a promisified middleware, when declared ones are done
+// add the last, generic one, to act as a catch-all
+function addHandler (errorType, middlewareHandler) {}
 
 /**
  * promesso takes a Promise-based middleware function and converts it to a classic array of middlewares
@@ -39,11 +48,18 @@ function promesso (handler) {
 
   return middlewares.map(rawOrPromise);
 }
-promesso.logger = changeLogger;
 
 function rawOrPromise (handler, index, array) {
   if (handler['@raw']) return handler;
   return handleFactory(handler, (index !== array.length - 1));
+}
+
+// FIXME: dynamically handle more types of errors
+// attaching can be done with a function that attaches handlers
+// at each iteration until they are up
+
+function handleFactoryDynamic (handler, usesNext) {
+
 }
 
 function handleFactory (handler, usesNext) {
@@ -57,9 +73,9 @@ function handleFactory (handler, usesNext) {
       if (isFunction(response)) response(res);
       else res.status(200).send(response);
     })
-    .catch(XError, xerrorHandler.bind(null, res))
-    .catch(Error, errorHandler.bind(null, req, res))
-    .catch(genericHandler.bind(null, res));
+    .catch(XError, err => xerrorHandler(res, err))
+    .catch(Error, err => errorHandler(req, res, err))
+    .catch(err => genericHandler(res, err));
   };
 }
 
@@ -82,11 +98,13 @@ function xerrorHandler (res, err) {
 }
 function errorHandler (req, res, err) {
   logger.log(err.stack, 'coding error', { body: req.body, query: req.query, params: req.params, ip: req.ip, status: 500 });
+  // FIXME: configurable 'uh-oh' error page for 500?
   // if (page) return res.status(500).render('error');
   return res.sendStatus(500);
 }
 function genericHandler (res, err) {
   logger.error('Non-Error Error, probably string:');
+  // FIXME: wrap in new Error(err) + test it
   logger.error(err);
   return res.sendStatus(500);
 }
@@ -100,4 +118,5 @@ function validationMiddleware (err, req, res, next) {
 }
 validationMiddleware['@raw'] = true;
 
-module.exports = promesso;
+module.exports = exports = promesso;
+exports.logger = changeLogger;
